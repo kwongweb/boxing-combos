@@ -37,6 +37,42 @@ function App() {
   const [roundStarted, setRoundStarted] = useState(false);
   const [roundOver, setRoundOver] = useState(false);
 
+  // 🔐 Wake Lock API
+  useEffect(() => {
+    let wakeLock = null;
+
+    async function requestWakeLock() {
+      try {
+        if ('wakeLock' in navigator) {
+          wakeLock = await navigator.wakeLock.request('screen');
+          wakeLock.addEventListener('release', () => {
+            console.log('Wake Lock was released');
+          });
+          console.log('Wake Lock is active');
+        } else {
+          console.warn('Wake Lock API not supported');
+        }
+      } catch (err) {
+        console.error(`${err.name}, ${err.message}`);
+      }
+    }
+
+    requestWakeLock();
+
+    // Re-acquire on visibility change
+    document.addEventListener('visibilitychange', async () => {
+      if (document.visibilityState === 'visible') {
+        await requestWakeLock();
+      }
+    });
+
+    return () => {
+      if (wakeLock) {
+        wakeLock.release();
+      }
+    };
+  }, []);
+
   useEffect(() => {
     let timer;
     if (roundStarted && timeLeft > 0) {
