@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./styles.css";
 
 const combos = [
@@ -36,39 +36,39 @@ function App() {
   const [timeLeft, setTimeLeft] = useState(180);
   const [roundStarted, setRoundStarted] = useState(false);
   const [roundOver, setRoundOver] = useState(false);
+  const videoRef = useRef(null);
+  const wakeLockRef = useRef(null);
 
-  // 🔐 Wake Lock API
-  useEffect(() => {
-    let wakeLock = null;
-
-    async function requestWakeLock() {
-      try {
-        if ('wakeLock' in navigator) {
-          wakeLock = await navigator.wakeLock.request('screen');
-          wakeLock.addEventListener('release', () => {
-            console.log('Wake Lock was released');
-          });
-          console.log('Wake Lock is active');
-        } else {
-          console.warn('Wake Lock API not supported');
-        }
-      } catch (err) {
-        console.error(`${err.name}, ${err.message}`);
+  const requestWakeLock = async () => {
+    try {
+      if ('wakeLock' in navigator) {
+        wakeLockRef.current = await navigator.wakeLock.request('screen');
+        wakeLockRef.current.addEventListener('release', () => {
+          console.log('Wake Lock was released');
+        });
+        console.log('Wake Lock is active');
       }
+    } catch (err) {
+      console.error(`${err.name}, ${err.message}`);
     }
+  };
 
-    requestWakeLock();
-
-    // Re-acquire on visibility change
-    document.addEventListener('visibilitychange', async () => {
+  useEffect(() => {
+    const handleVisibilityChange = async () => {
       if (document.visibilityState === 'visible') {
         await requestWakeLock();
+        if (videoRef.current) {
+          videoRef.current.play().catch(() => {});
+        }
       }
-    });
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
-      if (wakeLock) {
-        wakeLock.release();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      if (wakeLockRef.current) {
+        wakeLockRef.current.release();
       }
     };
   }, []);
@@ -91,6 +91,12 @@ function App() {
     setTimeLeft(180);
     setRoundStarted(true);
     setRoundOver(false);
+    requestWakeLock();
+
+    // iOS workaround
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    }
   };
 
   const nextRound = () => {
@@ -112,8 +118,23 @@ function App() {
   return (
     <div
       className="app"
-      style={{ backgroundColor: roundOver ? "#ff4d4d" : "white", minHeight: "100vh", padding: "2rem", textAlign: "center" }}
+      style={{
+        backgroundColor: roundOver ? "#ff4d4d" : "white",
+        minHeight: "100vh",
+        padding: "2rem",
+        textAlign: "center"
+      }}
     >
+      {/* Hidden video to keep iOS screen awake */}
+      <video
+        ref={videoRef}
+        src="https://www.w3schools.com/html/mov_bbb.mp4"
+        muted
+        loop
+        playsInline
+        style={{ display: "none" }}
+      />
+
       <p style={{ fontSize: "2rem" }}>Time Left: {formatTime(timeLeft)}</p>
 
       {comboStack.map((combo, i) => (
