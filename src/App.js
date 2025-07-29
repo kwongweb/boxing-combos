@@ -78,7 +78,6 @@ function App() {
       className="app"
       style={{ backgroundColor: roundOver ? "#ff4d4d" : "white", minHeight: "100vh", padding: "2rem", textAlign: "center" }}
     >
-      <h1>Boxing Combos</h1>
       <p style={{ fontSize: "2rem" }}>Time Left: {formatTime(timeLeft)}</p>
 
       {comboStack.map((combo, i) => (
