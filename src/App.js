@@ -12,11 +12,11 @@ const combos = [
   [1, 2, 5],
   [2, 5, 4],
   [1, 6, 3, 2],
-  [1, 2, 1],        // jab-cross-jab
-  [2, 3, 2, 1],     // cross-hook-cross-jab
-  [3, 2, 3],        // lead hook-cross-lead hook
-  [1, 4, 3, 2],     // jab-rear upper-lead hook-cross
-  [1, 1, 2, 3]      // jab-jab-cross-lead hook
+  [1, 2, 1],
+  [2, 3, 2, 1],
+  [3, 2, 3],
+  [1, 4, 3, 2],
+  [1, 1, 2, 3]
 ];
 
 const dingSound = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
@@ -82,14 +82,24 @@ function App() {
       <p style={{ fontSize: "2rem" }}>Time Left: {formatTime(timeLeft)}</p>
 
       {comboStack.map((combo, i) => (
-          <div key={i} className="combo-block">
+        <div key={i} className="combo-block">
           <span className="combo-label">Combo {i + 1}:</span>
           {combo.join(" - ")}
         </div>
       ))}
 
       {!roundStarted && !roundOver && (
-        <button onClick={startRound}>Begin Round</button>
+        <div>
+          <button onClick={startRound}>Begin Round</button>
+          <button onClick={startOver} style={{ marginLeft: "1rem" }}>Start Over</button>
+        </div>
+      )}
+
+      {roundStarted && !roundOver && (
+        <div style={{ marginTop: "1rem" }}>
+          <button onClick={startOver}>Start Over</button>
+          <button onClick={nextRound} style={{ marginLeft: "1rem" }}>Next Round</button>
+        </div>
       )}
 
       {roundOver && (
