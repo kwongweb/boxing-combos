@@ -91,23 +91,29 @@ function App() {
       {!roundStarted && !roundOver && (
         <div>
           <button onClick={startRound}>Begin Round</button>
-          <button onClick={startOver} style={{ marginLeft: "1rem" }}>Start Over</button>
+          <div style={{ marginTop: "1rem" }}>
+            <a href="#" onClick={(e) => { e.preventDefault(); startOver(); }}>Start Over</a>
+          </div>
         </div>
       )}
 
       {roundStarted && !roundOver && (
         <div style={{ marginTop: "1rem" }}>
-          <button onClick={startOver}>Start Over</button>
-          <button onClick={nextRound} style={{ marginLeft: "1rem" }}>Next Round</button>
+          <div>
+            <a href="#" onClick={(e) => { e.preventDefault(); nextRound(); }}>Next Round</a>
+          </div>
+          <div style={{ marginTop: "0.5rem" }}>
+            <a href="#" onClick={(e) => { e.preventDefault(); startOver(); }}>Start Over</a>
+          </div>
         </div>
       )}
 
       {roundOver && (
         <div>
           {comboStack.length < 5 && <button onClick={nextRound}>Next Round</button>}
-          <button onClick={startOver} style={{ marginLeft: "1rem" }}>
-            Start Over
-          </button>
+          <div style={{ marginTop: "1rem" }}>
+            <a href="#" onClick={(e) => { e.preventDefault(); startOver(); }}>Start Over</a>
+          </div>
         </div>
       )}
     </div>
