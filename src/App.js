@@ -21,8 +21,19 @@ const combos = [
 
 const dingSound = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
 
-function getRandomCombo() {
-  return combos[Math.floor(Math.random() * combos.length)];
+function getRandomCombo(usedCombos = []) {
+  const availableCombos = combos.filter(combo => 
+    !usedCombos.some(used => 
+      used.length === combo.length && used.every((val, i) => val === combo[i])
+    )
+  );
+  
+  if (availableCombos.length === 0) {
+    // If all combos are used, return a random one from the full list
+    return combos[Math.floor(Math.random() * combos.length)];
+  }
+  
+  return availableCombos[Math.floor(Math.random() * availableCombos.length)];
 }
 
 function formatTime(seconds) {
@@ -32,7 +43,7 @@ function formatTime(seconds) {
 }
 
 function App() {
-  const [comboStack, setComboStack] = useState([getRandomCombo()]);
+  const [comboStack, setComboStack] = useState([getRandomCombo([])]);
   const [timeLeft, setTimeLeft] = useState(180);
   const [roundStarted, setRoundStarted] = useState(false);
   const [roundOver, setRoundOver] = useState(false);
@@ -101,7 +112,7 @@ function App() {
 
   const nextRound = () => {
     if (comboStack.length < 5) {
-      setComboStack([...comboStack, getRandomCombo()]);
+      setComboStack([...comboStack, getRandomCombo(comboStack)]);
     }
     setTimeLeft(180);
     setRoundStarted(false);
@@ -109,7 +120,7 @@ function App() {
   };
 
   const startOver = () => {
-    setComboStack([getRandomCombo()]);
+    setComboStack([getRandomCombo([])]);
     setTimeLeft(180);
     setRoundStarted(false);
     setRoundOver(false);
