@@ -119,7 +119,7 @@ function App() {
     <div
       className="app"
       style={{
-        backgroundColor: roundOver ? "#ff4d4d" : "white",
+        backgroundColor: roundOver ? "#ff4d4d" : roundStarted ? "#90EE90" : "white",
         minHeight: "100vh",
         padding: "2rem",
         textAlign: "center"
