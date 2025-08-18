@@ -167,6 +167,7 @@ function App() {
       {roundOver && (
         <div>
           {comboStack.length < 5 && <button onClick={nextRound}>Next Round</button>}
+          }
           <div style={{ marginTop: "1rem" }}>
             <a href="#" onClick={(e) => { e.preventDefault(); startOver(); }}>Start Over</a>
           </div>
