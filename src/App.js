@@ -47,8 +47,11 @@ function App() {
   const [timeLeft, setTimeLeft] = useState(180);
   const [roundStarted, setRoundStarted] = useState(false);
   const [roundOver, setRoundOver] = useState(false);
+  const [confirmationTimer, setConfirmationTimer] = useState(0);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const videoRef = useRef(null);
   const wakeLockRef = useRef(null);
+  const confirmationIntervalRef = useRef(null);
 
   const requestWakeLock = async () => {
     try {
@@ -98,10 +101,27 @@ function App() {
     return () => clearInterval(timer);
   }, [roundStarted, timeLeft]);
 
+  useEffect(() => {
+    if (showConfirmation && confirmationTimer > 0) {
+      confirmationIntervalRef.current = setInterval(() => {
+        setConfirmationTimer((prev) => prev - 1);
+      }, 1000);
+    } else if (confirmationTimer === 0 && showConfirmation) {
+      setShowConfirmation(false);
+    }
+    return () => {
+      if (confirmationIntervalRef.current) {
+        clearInterval(confirmationIntervalRef.current);
+      }
+    };
+  }, [showConfirmation, confirmationTimer]);
+
   const startRound = () => {
     setTimeLeft(180);
     setRoundStarted(true);
     setRoundOver(false);
+    setShowConfirmation(false);
+    setConfirmationTimer(0);
     requestWakeLock();
 
     // iOS workaround
@@ -110,13 +130,25 @@ function App() {
     }
   };
 
-  const nextRound = () => {
+  const initiateNextRound = () => {
+    setShowConfirmation(true);
+    setConfirmationTimer(5);
+  };
+
+  const confirmNextRound = () => {
     if (comboStack.length < 5) {
       setComboStack([...comboStack, getRandomCombo(comboStack)]);
     }
     setTimeLeft(180);
     setRoundStarted(false);
     setRoundOver(false);
+    setShowConfirmation(false);
+    setConfirmationTimer(0);
+  };
+
+  const cancelNextRound = () => {
+    setShowConfirmation(false);
+    setConfirmationTimer(0);
   };
 
   const startOver = () => {
@@ -124,6 +156,8 @@ function App() {
     setTimeLeft(180);
     setRoundStarted(false);
     setRoundOver(false);
+    setShowConfirmation(false);
+    setConfirmationTimer(0);
   };
 
   return (
@@ -167,7 +201,7 @@ function App() {
       {roundStarted && !roundOver && (
         <div style={{ marginTop: "1rem" }}>
           <div>
-            <a href="#" onClick={(e) => { e.preventDefault(); nextRound(); }}>Next Round</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); initiateNextRound(); }}>Next Round</a>
           </div>
           <div style={{ marginTop: "0.5rem" }}>
             <a href="#" onClick={(e) => { e.preventDefault(); startOver(); }}>Start Over</a>
@@ -177,7 +211,35 @@ function App() {
 
       {roundOver && (
         <div>
-          {comboStack.length < 5 && <button onClick={nextRound}>Next Round</button>}
+          {comboStack.length < 5 && !showConfirmation && (
+            <button onClick={initiateNextRound}>Next Round</button>
+          )}
+          {showConfirmation && (
+            <div style={{ marginTop: "1rem" }}>
+              <p style={{ fontSize: "1.5rem", margin: "1rem 0" }}>
+                Confirm Next Round? ({confirmationTimer}s)
+              </p>
+              <div>
+                <button 
+                  onClick={confirmNextRound}
+                  style={{ 
+                    background: "linear-gradient(135deg, #28a745, #1e7e34)",
+                    marginRight: "1rem"
+                  }}
+                >
+                  Yes, Next Round
+                </button>
+                <button 
+                  onClick={cancelNextRound}
+                  style={{ 
+                    background: "linear-gradient(135deg, #dc3545, #c82333)"
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
           }
           <div style={{ marginTop: "1rem" }}>
             <a href="#" onClick={(e) => { e.preventDefault(); startOver(); }}>Start Over</a>
