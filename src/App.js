@@ -169,6 +169,26 @@ function App() {
     setConfirmationTimer(0);
   };
 
+  const initiateStartOver = () => {
+    if (roundStarted || roundOver || comboStack.length > 1) {
+      setShowStartOverConfirmation(true);
+      setStartOverConfirmationTimer(5);
+    } else {
+      startOver();
+    }
+  };
+
+  const confirmStartOver = () => {
+    startOver();
+    setShowStartOverConfirmation(false);
+    setStartOverConfirmationTimer(0);
+  };
+
+  const cancelStartOver = () => {
+    setShowStartOverConfirmation(false);
+    setStartOverConfirmationTimer(0);
+  };
+
   const startOver = () => {
     setComboStack([getRandomCombo([])]);
     setTimeLeft(180);
@@ -176,6 +196,8 @@ function App() {
     setRoundOver(false);
     setShowConfirmation(false);
     setConfirmationTimer(0);
+    setShowStartOverConfirmation(false);
+    setStartOverConfirmationTimer(0);
   };
 
   return (
@@ -211,7 +233,7 @@ function App() {
         <div>
           <button onClick={startRound}>Begin Round</button>
           <div style={{ marginTop: "1rem" }}>
-            <a href="#" onClick={(e) => { e.preventDefault(); startOver(); }}>Start Over</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); initiateStartOver(); }}>Start Over</a>
           </div>
         </div>
       )}
@@ -222,7 +244,7 @@ function App() {
             <a href="#" onClick={(e) => { e.preventDefault(); initiateNextRound(); }}>Next Round</a>
           </div>
           <div style={{ marginTop: "0.5rem" }}>
-            <a href="#" onClick={(e) => { e.preventDefault(); startOver(); }}>Start Over</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); initiateStartOver(); }}>Start Over</a>
           </div>
         </div>
       )}
