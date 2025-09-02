@@ -258,8 +258,36 @@ function App() {
               </div>
             </div>
           )}
+          {showStartOverConfirmation && (
+            <div style={{ marginTop: "1rem" }}>
+              <p style={{ fontSize: "1.5rem", margin: "1rem 0" }}>
+                Confirm Start Over? ({startOverConfirmationTimer}s)
+              </p>
+              <div>
+                <button 
+                  onClick={confirmStartOver}
+                  style={{ 
+                    background: "linear-gradient(135deg, #28a745, #1e7e34)",
+                    marginRight: "1rem"
+                  }}
+                >
+                  Yes, Start Over
+                </button>
+                <button 
+                  onClick={cancelStartOver}
+                  style={{ 
+                    background: "linear-gradient(135deg, #dc3545, #c82333)"
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
           <div style={{ marginTop: "1rem" }}>
-            <a href="#" onClick={(e) => { e.preventDefault(); startOver(); }}>Start Over</a>
+            {!showStartOverConfirmation && (
+              <a href="#" onClick={(e) => { e.preventDefault(); initiateStartOver(); }}>Start Over</a>
+            )}
           </div>
         </div>
       )}
