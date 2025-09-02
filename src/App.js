@@ -149,8 +149,14 @@ function App() {
   };
 
   const initiateNextRound = () => {
-    setShowConfirmation(true);
-    setConfirmationTimer(5);
+    if (roundStarted && !roundOver) {
+      // Only show confirmation if round is actively running
+      setShowConfirmation(true);
+      setConfirmationTimer(5);
+    } else {
+      // If round is over, proceed directly to next round
+      confirmNextRound();
+    }
   };
 
   const confirmNextRound = () => {
@@ -305,7 +311,7 @@ function App() {
 
       {roundOver && (
         <div>
-          {comboStack.length < 5 && !showConfirmation && (
+          {comboStack.length < 5 && (
             <button onClick={initiateNextRound}>Next Round</button>
           )}
           <div style={{ marginTop: "1rem" }}>
