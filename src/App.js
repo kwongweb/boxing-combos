@@ -249,62 +249,64 @@ function App() {
         </div>
       )}
 
+      {showConfirmation && (
+        <div style={{ marginTop: "1rem" }}>
+          <p style={{ fontSize: "1.5rem", margin: "1rem 0" }}>
+            Confirm Next Round? ({confirmationTimer}s)
+          </p>
+          <div>
+            <button 
+              onClick={confirmNextRound}
+              style={{ 
+                background: "linear-gradient(135deg, #28a745, #1e7e34)",
+                marginRight: "1rem"
+              }}
+            >
+              Yes, Next Round
+            </button>
+            <button 
+              onClick={cancelNextRound}
+              style={{ 
+                background: "linear-gradient(135deg, #dc3545, #c82333)"
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showStartOverConfirmation && (
+        <div style={{ marginTop: "1rem" }}>
+          <p style={{ fontSize: "1.5rem", margin: "1rem 0" }}>
+            Confirm Start Over? ({startOverConfirmationTimer}s)
+          </p>
+          <div>
+            <button 
+              onClick={confirmStartOver}
+              style={{ 
+                background: "linear-gradient(135deg, #28a745, #1e7e34)",
+                marginRight: "1rem"
+              }}
+            >
+              Yes, Start Over
+            </button>
+            <button 
+              onClick={cancelStartOver}
+              style={{ 
+                background: "linear-gradient(135deg, #dc3545, #c82333)"
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
       {roundOver && (
         <div>
           {comboStack.length < 5 && !showConfirmation && (
             <button onClick={initiateNextRound}>Next Round</button>
-          )}
-          {showConfirmation && (
-            <div style={{ marginTop: "1rem" }}>
-              <p style={{ fontSize: "1.5rem", margin: "1rem 0" }}>
-                Confirm Next Round? ({confirmationTimer}s)
-              </p>
-              <div>
-                <button 
-                  onClick={confirmNextRound}
-                  style={{ 
-                    background: "linear-gradient(135deg, #28a745, #1e7e34)",
-                    marginRight: "1rem"
-                  }}
-                >
-                  Yes, Next Round
-                </button>
-                <button 
-                  onClick={cancelNextRound}
-                  style={{ 
-                    background: "linear-gradient(135deg, #dc3545, #c82333)"
-                  }}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          )}
-          {showStartOverConfirmation && (
-            <div style={{ marginTop: "1rem" }}>
-              <p style={{ fontSize: "1.5rem", margin: "1rem 0" }}>
-                Confirm Start Over? ({startOverConfirmationTimer}s)
-              </p>
-              <div>
-                <button 
-                  onClick={confirmStartOver}
-                  style={{ 
-                    background: "linear-gradient(135deg, #28a745, #1e7e34)",
-                    marginRight: "1rem"
-                  }}
-                >
-                  Yes, Start Over
-                </button>
-                <button 
-                  onClick={cancelStartOver}
-                  style={{ 
-                    background: "linear-gradient(135deg, #dc3545, #c82333)"
-                  }}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
           )}
           <div style={{ marginTop: "1rem" }}>
             {!showStartOverConfirmation && (
