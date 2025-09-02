@@ -49,9 +49,12 @@ function App() {
   const [roundOver, setRoundOver] = useState(false);
   const [confirmationTimer, setConfirmationTimer] = useState(0);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showStartOverConfirmation, setShowStartOverConfirmation] = useState(false);
+  const [startOverConfirmationTimer, setStartOverConfirmationTimer] = useState(0);
   const videoRef = useRef(null);
   const wakeLockRef = useRef(null);
   const confirmationIntervalRef = useRef(null);
+  const startOverConfirmationIntervalRef = useRef(null);
 
   const requestWakeLock = async () => {
     try {
@@ -115,6 +118,21 @@ function App() {
       }
     };
   }, [showConfirmation, confirmationTimer]);
+
+  useEffect(() => {
+    if (showStartOverConfirmation && startOverConfirmationTimer > 0) {
+      startOverConfirmationIntervalRef.current = setInterval(() => {
+        setStartOverConfirmationTimer((prev) => prev - 1);
+      }, 1000);
+    } else if (startOverConfirmationTimer === 0 && showStartOverConfirmation) {
+      setShowStartOverConfirmation(false);
+    }
+    return () => {
+      if (startOverConfirmationIntervalRef.current) {
+        clearInterval(startOverConfirmationIntervalRef.current);
+      }
+    };
+  }, [showStartOverConfirmation, startOverConfirmationTimer]);
 
   const startRound = () => {
     setTimeLeft(180);
