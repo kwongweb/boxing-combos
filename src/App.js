@@ -243,7 +243,8 @@ function App() {
           <div style={{ marginTop: "1rem" }}>
             <a href="#" onClick={(e) => { e.preventDefault(); startOver(); }}>Start Over</a>
           </div>
-        )}
+        </div>
+      )}
     </div>
   );
 }
